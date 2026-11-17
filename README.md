@@ -1,2 +1,2 @@
-## Quantum Time-dependent Isotope Eigen Simulation
+## Quantum Time-dependent Isotope Engine
 ---
