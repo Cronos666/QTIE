@@ -1,2 +1,2 @@
-## Quantum Time-dependent Isotope Emulation
+## Quantum Time-dependent Isotope Eigen Simulation
 ---
