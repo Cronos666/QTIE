@@ -2,6 +2,10 @@
 #include <complex>
 #include <Eigen/Dense>
 #include "dirac.h"
+#include <array>
+#include <cstdio>
+#include <unistd.h>
+#include <vector>
 
 using namespace Eigen;
 
@@ -33,6 +37,43 @@ int main (int argc, char *argv[]) {
   std::cout<<"\nA: \n"<<m<<'\n';
   std::cout<<"A|v>: \n"<<m*v.ket()<<'\n';
   std::cout<<"A<v|: \n"<<v.bra()*m<<'\n';
-  
+
+
+  FILE *gnuplot = popen("gnuplot", "w");
+        fprintf(gnuplot, "bind Close 'exit gnuplot'\n");
+
+        fprintf(gnuplot, "set xrange [*:*]\n");
+        fprintf(gnuplot, "set yrange [*:*]\n");
+        fprintf(gnuplot, "set zrange [*:*]\n");
+
+        fprintf(gnuplot, "set xlabel 'Re'\n");
+        fprintf(gnuplot, "set ylabel 'Im'\n");
+        fprintf(gnuplot, "set zlabel 'Prob'\n");
+        fprintf(gnuplot, "set view 60, 45\n");
+
+
+  std::vector<std::array<double, 3>> pts;
+  double dt=0;
+  while (dt<100) {
+    //std::cout<<dt<<"; "<<v.ket()[0].real()<<"; "<<v.ket()[1].real()<<"\n\n";
+    dt+=0.1;
+    v.set(0,v.ket()[0]+dt*(1.0+0.5i));
+    v.norm();
+    auto prob=v.bra()*v.ket();
+    double val=prob[0].real();
+
+    
+    pts.push_back({v.ket()[0].real(), v.ket()[0].imag(), val});
+    fprintf(gnuplot, "set title 'Step %f'\n", dt);
+    fprintf(gnuplot, "splot '-' with linespoints pt 7 notitle\n");
+    for (const auto& p : pts) {
+        fprintf(gnuplot, "%f %f %f\n", p[0], p[1], p[2]);
+    }
+    fprintf(gnuplot, "e\n");
+    fflush(gnuplot);
+    usleep(50000);
+  }  
+ 
+  pclose(gnuplot);
   return 0;
 }
