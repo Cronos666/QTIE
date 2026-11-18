@@ -2,10 +2,8 @@
 #include <complex>
 #include <Eigen/Dense>
 #include "dirac.h"
-#include <array>
 #include <cstdio>
-#include <unistd.h>
-#include <vector>
+#include <unistd.h>//sleep
 
 using namespace Eigen;
 
