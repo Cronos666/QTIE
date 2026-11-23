@@ -1,13 +1,18 @@
 #include <iostream>
 #include <complex>
 #include <Eigen/Dense>
+#include "Eigen/Core"
 #include "dirac.h"
+#include "numet.h"
 #include <cstdio>
 #include <unistd.h>//sleep
+#include <cmath>
+
 
 using namespace Eigen;
 
-int main (int argc, char *argv[]) {
+void dirac_demo(){
+
   Dirac v={1.0,0.0 -1.0i,};
 
   std::cout<<"|v>: "<<v.ket()<<'\n';
@@ -36,43 +41,40 @@ int main (int argc, char *argv[]) {
   std::cout<<"A|v>: \n"<<m*v.ket()<<'\n';
   std::cout<<"A<v|: \n"<<v.bra()*m<<'\n';
 
-
-  FILE *gnuplot = popen("gnuplot", "w");
-        fprintf(gnuplot, "bind Close 'exit gnuplot'\n");
-
-        fprintf(gnuplot, "set xrange [*:*]\n");
-        fprintf(gnuplot, "set yrange [*:*]\n");
-        fprintf(gnuplot, "set zrange [*:*]\n");
-
-        fprintf(gnuplot, "set xlabel 'Re'\n");
-        fprintf(gnuplot, "set ylabel 'Im'\n");
-        fprintf(gnuplot, "set zlabel 'Prob'\n");
-        fprintf(gnuplot, "set view 60, 45\n");
+};
 
 
-  std::vector<std::array<double, 3>> pts;
-  double dt=0;
-  while (dt<100) {
-    //std::cout<<dt<<"; "<<v.ket()[0].real()<<"; "<<v.ket()[1].real()<<"\n\n";
-    dt+=0.1;
-    v.set(0,v.ket()[0]+dt*(1.0+0.5i));
-    v.norm();
-    auto prob=v.bra()*v.ket();
-    double val=prob[0].real();
+void numerov_demo(){
+  const double dt=0.01;
+  const Eigen::Index steps=1001;
 
-    
-    pts.push_back({v.ket()[0].real(), v.ket()[1].real(), val});
-    fprintf(gnuplot, "set title 'Step %f'\n", dt);
-    fprintf(gnuplot, "splot '-' with linespoints pt 7 notitle\n");
-    for (const auto& p : pts) {
-        fprintf(gnuplot, "%f %f %f\n", p[0], p[1], p[2]);
-    }
-    fprintf(gnuplot, "e\n");
-    fflush(gnuplot);
-    usleep(50000);
-  }  
- 
-  pclose(gnuplot);
+  Dirac angular_freq={1.0,M_PI/2, M_PI};
+  Dirac y0={1.0,1.0,1.0};
+  Dirac y1={cos(1.0*dt),cos(M_PI*dt/2),cos(M_PI*dt)};
+
+  Eigen::VectorXcd omega_sq = angular_freq.ket().cwiseProduct(angular_freq.ket());
+  auto func = [&](Eigen::Index) -> const Eigen::VectorXcd& { return omega_sq; };
+
+  Eigen::MatrixXcd U = numerov(y0.ket(), y1.ket(), func, dt, steps);
+
+  const double t_end = (steps - 1) * dt;
+  Eigen::VectorXcd exact = (angular_freq.ket().array() * t_end).cos().matrix();
+  Eigen::VectorXcd numerical = U.col(steps - 1);
+
+  std::cout << "\nNumerical (t = " << t_end << "):\n" << numerical << '\n';
+  std::cout << "\nAnalytical (t = " << t_end << "):\n" << exact << '\n';
+  std::cout << "\nMax absolute error: "
+              << (numerical - exact).cwiseAbs().maxCoeff() << '\n';
+};
+
+
+
+int main (int argc, char *argv[]) {
+  
+  dirac_demo();
+
+  numerov_demo();
+
   
   return 0;
 }

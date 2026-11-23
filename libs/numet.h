@@ -19,13 +19,55 @@
 #ifndef NUMET_H
 #define NUMET_H
 
-#include <initializer_list>
+#include "Eigen/Core"
+#include <stdexcept>
 #include <Eigen/Dense>
-#include <complex>
+#include <utility>
 
-using namespace Eigen;
-using namespace std::complex_literals;
+template <typename g_func>
+Eigen::MatrixXcd numerov(
+    const Eigen::Ref<const Eigen::VectorXcd>&y0,
+    const Eigen::Ref<const Eigen::VectorXcd>&y1,
+    g_func&& g_at_step,
+    double dx,
+    Eigen::Index n){
+  
+    if (y0.size() != y1.size() || y0.size() == 0) {
+      throw std::invalid_argument("Err: inputs have different size or are empty.");
+    }
+    if (n < 2){
+      throw std::invalid_argument("Err: there must be at least 2 steps.");
+    }
 
-double <complex> numerov(double
+    //Numerov's factor: h/12 
+    const double scale= (dx*dx)/12.0; 
+   
+    
+    Eigen::MatrixXcd results(y0.size(),n);
+    results.col(0)=y0;
+    results.col(1)=y1;
+
+    //precalculated (h/12)*g(x)
+    Eigen::ArrayXcd prev_weight=scale*g_at_step(0).array();
+    Eigen::ArrayXcd curr_weight=scale*g_at_step(1).array();
+    Eigen::ArrayXcd next_weight(y0.size());
+
+    for (Eigen::Index i=1; i<n-1; i++){
+      next_weight=scale*g_at_step(i+1).array();
+      
+      auto prev_y = results.col(i-1).array();
+      auto curr_y = results.col(i).array();
+
+      results.col(i+1).array()=(2.0*(1.0-5*curr_weight)*curr_y - (1.0+prev_weight)*prev_y)/(1.0+next_weight);
+      
+      //no copy data swap
+      std::swap(prev_weight, curr_weight);
+      std::swap(curr_weight, prev_weight);
+
+    }
+
+
+  return results;    
+};
 
 #endif //NUMET_H
