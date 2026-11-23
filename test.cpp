@@ -36,7 +36,7 @@ int main (int argc, char *argv[]) {
   std::cout<<"A|v>: \n"<<m*v.ket()<<'\n';
   std::cout<<"A<v|: \n"<<v.bra()*m<<'\n';
 
-/*
+
   FILE *gnuplot = popen("gnuplot", "w");
         fprintf(gnuplot, "bind Close 'exit gnuplot'\n");
 
@@ -73,6 +73,6 @@ int main (int argc, char *argv[]) {
   }  
  
   pclose(gnuplot);
-  */
+  
   return 0;
 }
