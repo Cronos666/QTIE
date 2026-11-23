@@ -1,0 +1,114 @@
+\documentclass[a4paper,12pt]{article} % czcionka 10pt
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[polish]{babel}
+\usepackage{graphicx}
+\usepackage{geometry}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{setspace}
+\usepackage{amsmath}
+\usepackage{float}
+\usepackage{tocloft}
+\usepackage[backend=biber,sorting=none]{biblatex}
+\addbibresource{resources.bib}
+
+\usepackage{caption}
+\captionsetup[table]{justification=raggedright, singlelinecheck=false, font=small}
+
+% Czcionka Times New Roman
+\usepackage{mathptmx}
+
+% Marginesy 2 cm
+\geometry{top=2cm,bottom=2cm,left=2cm,right=2cm}
+
+% Interlinia
+\setstretch{1.5}
+
+% Nagłówki sekcji - odstępy 12pt przed i 6pt po nagłówku
+\titlespacing*{\section}{0pt}{12pt}{6pt}
+\titlespacing*{\subsection}{0pt}{12pt}{6pt}
+\titlespacing*{\subsubsection}{0pt}{12pt}{6pt}
+
+% Formatowanie nagłówków sekcji (czcionka 12pt, odpowiednie pogrubienie/kursywa)
+\titleformat{\section}{\normalfont\fontsize{12}{18}\bfseries}{\thesection.}{1em}{}
+\titleformat{\subsection}{\normalfont\fontsize{12}{18}\bfseries}{\thesubsection.}{1em}{}
+\titleformat{\subsubsection}{\normalfont\fontsize{12}{18}\itshape}{\thesubsubsection.}{1em}{}
+\titleformat{\paragraph}[hang]{\normalfont\fontsize{12}{18}\itshape}{}{0pt}{}
+
+% Stopka - numeracja stron + imię autora
+\pagestyle{fancy}
+\fancyhf{}
+\fancyfoot[C]{\studentName \hfill Strona \thepage}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+% Tabele - automatyczne dopasowanie szerokości i odstępów
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{tabularx}
+\renewcommand\tabularxcolumn[1]{>{\centering\arraybackslash}m{#1}}
+\setlength{\extrarowheight}{2pt} % dodatkowa wysokość wierszy
+\renewcommand{\arraystretch}{1.0} % odstęp między wierszami tabeli
+
+%Wykresy
+\captionsetup[figure]{justification=centering}
+
+% User-fillable fields
+\newcommand{\rTitle}{Badanie baterii słonecznej}
+\newcommand{\studentName}{Kacper Śmieżewski}
+%\newcommand{\studentIndex}{204529}
+\newcommand{\faculty}{FTiMS}
+\newcommand{\fieldOfStudy}{Fizyka Techniczna}
+\newcommand{\raportDate}{30/10/2026}
+
+\begin{document}
+    \begin{flushright}
+    Gdańsk, \raportDate
+    \end{flushright}
+    \vspace{12pt}
+    \textbf{\rTitle}\\
+    \begin{flushleft}
+    % \textit{\studentName} \textit{\studentIndex}\\
+      Politechnika Gdańska,\\
+      \faculty,\\ 
+      \fieldOfStudy
+    \end{flushleft}
+\vspace{24pt}
+
+%\renewcommand{\thesection}{\Roman{section}}
+\renewcommand{\thesection}{\Roman{section}}
+\addtolength{\cftsecnumwidth}{1em}
+
+\begin{abstract}
+  lorem ipsum dolor
+\end{abstract}
+
+\section{Cel}
+
+\section{Wstęp teoretyczny}
+
+
+
+%\begin{figure}[H]
+%  \centering
+%  \includegraphics[width=8cm]{figs/fig00.png}
+%  \caption{Schemat układu pomiarowego}
+%  \label{schem}
+%\end{figure}
+
+
+\printbibliography
+
+\newpage
+%\section{Załącznik - tabele pomiarów}
+%\begin{table}[H]
+%  \centering
+%  \caption{Pomiary fotometryczne}
+%  \label{tab:fot}
+%  \input{tabs/tab00}
+%\end{table}
+
+
+\end{document}

@@ -36,7 +36,7 @@ int main (int argc, char *argv[]) {
   std::cout<<"A|v>: \n"<<m*v.ket()<<'\n';
   std::cout<<"A<v|: \n"<<v.bra()*m<<'\n';
 
-
+/*
   FILE *gnuplot = popen("gnuplot", "w");
         fprintf(gnuplot, "bind Close 'exit gnuplot'\n");
 
@@ -61,7 +61,7 @@ int main (int argc, char *argv[]) {
     double val=prob[0].real();
 
     
-    pts.push_back({v.ket()[0].real(), v.ket()[0].imag(), val});
+    pts.push_back({v.ket()[0].real(), v.ket()[1].real(), val});
     fprintf(gnuplot, "set title 'Step %f'\n", dt);
     fprintf(gnuplot, "splot '-' with linespoints pt 7 notitle\n");
     for (const auto& p : pts) {
@@ -73,5 +73,6 @@ int main (int argc, char *argv[]) {
   }  
  
   pclose(gnuplot);
+  */
   return 0;
 }
